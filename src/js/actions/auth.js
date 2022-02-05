@@ -4,7 +4,7 @@ export const registerUser = formData => dispatch => {
     dispatch({type: 'AUTH_REGISTER_INIT'});
     return api.register(formData)
         .then(user => dispatch({type: 'AUTH_REGISTER_SUCCESS', user}))
-        .catch(error => dispatch({type: 'AUTH_REGISTER_ERROR', error}))
+        .catfirebch(error => dispatch({type: 'AUTH_REGISTER_ERROR', error}))
 }
 
 export const loginUser = formData => dispatch => {
