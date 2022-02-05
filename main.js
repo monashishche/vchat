@@ -13,7 +13,11 @@ function createWindow() {
             preload: path.join(__dirname, 'preload.js')
         }
     });
-    win.loadFile('index.html');
+    win.loadURL(
+        isDev
+            ? "http://localhost:3000"
+            : `file://${path.join(__dirname, "../build/index.html")}`
+    );
     isDev && win.webContents.openDevTools();
 }
 if(isDev) {
