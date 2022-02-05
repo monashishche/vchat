@@ -2,7 +2,7 @@ import * as api from '../api/chats';
 import db from '../db/firestore';
 
 export const fetchChats = () => async (dispatch, getState) => {
-  const { user } = getState().auth;
+  //const { user } = getState().auth;
   dispatch({type: 'CHATS_FETCH_INIT'});
   const chats = await api.fetchChats();
   const sortedChats = {joined: chats, available: chats};
@@ -75,6 +75,7 @@ export const subscribeToMessages = chatId => dispatch => {
       if (change.type === 'added') {
         return {id: change.doc.id, ...change.doc.data()}
       }
+      return {};
     })
 
     const messagesWithAuthor = [];

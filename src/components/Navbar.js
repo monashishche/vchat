@@ -23,7 +23,7 @@ export default function Navbar() {
                     <div className="chat-navbar-inner-right">
                         {user ?
                             <>
-                                <img className="avatar mr-2" src={user.avatar} />
+                                <img className="avatar mr-2" src={user.avatar} alt=""/>
                                 <span className="logged-in-user ml-5">Hi {user.username} </span>
                                 <Tooltip title="Logout" color="red">
                                 <PoweroffOutlined onClick={() => dispatch(logout())} style={{color: 'red'}}/>

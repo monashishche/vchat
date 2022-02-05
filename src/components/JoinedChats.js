@@ -18,7 +18,7 @@ export default function JoinedChats({chats = []}) {
                 </div>
             </div>
             <ul className="items">
-                {chats.filter(chat => !search || search.length > 0 && chat.name.toLowerCase().includes(search.toLowerCase()))
+                {chats.filter(chat => !search || (search.length > 0 && chat.name.toLowerCase().includes(search.toLowerCase())))
                     .map(chat => {
                     return (
                         <li

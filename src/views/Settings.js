@@ -1,7 +1,4 @@
 import React from 'react';
-import JoinedChats from "../components/JoinedChats";
-import AvailableChats from "../components/AvailableChats";
-import ViewTitle from "../components/shared/ViewTitle";
 
 export default function Settings() {
     return (

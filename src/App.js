@@ -11,7 +11,7 @@ import LoadingView from './components/shared/Loading';
 
 import {listenToAuthChanges} from './actions/auth';
 import {listenToConnectionChanges} from './actions/app';
-import {HashRouter as Router, Navigate, Route, Routes} from 'react-router-dom';
+import {HashRouter as Router, Route, Routes} from 'react-router-dom';
 import Navbar from "./components/Navbar";
 //import { checkUserConnection } from './actions/connection';
 //import { loadInitialSettings } from './actions/settings';
