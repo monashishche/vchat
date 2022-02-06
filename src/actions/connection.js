@@ -1,4 +1,3 @@
-
 import * as api from '../api/connection';
 
 export const checkUserConnection = uid => dispatch =>

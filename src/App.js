@@ -13,7 +13,7 @@ import {listenToAuthChanges} from './actions/auth';
 import {listenToConnectionChanges} from './actions/app';
 import {HashRouter as Router, Route, Routes} from 'react-router-dom';
 import Navbar from "./components/Navbar";
-//import { checkUserConnection } from './actions/connection';
+import { checkUserConnection } from './actions/connection';
 //import { loadInitialSettings } from './actions/settings';
 
 const ContentWrapper = ({children}) => {
@@ -26,11 +26,9 @@ const ContentWrapper = ({children}) => {
 function ChatApp() {
     const dispatch = useDispatch();
     const isChecking = useSelector(({auth}) => auth.isChecking);
-    const isOnline = useSelector(({app}) => app.isOnline);
     const user = useSelector(({auth}) => auth.user);
 
         useEffect(() => {
-            dispatch(listenToAuthChanges());
            // dispatch(loadInitialSettings());
             const unsubFromAuth = dispatch(listenToAuthChanges());
             const unsubFromConnection = dispatch(listenToConnectionChanges());
@@ -40,7 +38,7 @@ function ChatApp() {
                 unsubFromConnection();
             }
         }, [dispatch]);
-/*
+
         useEffect(() => {
             let unsubFromUserConnection;
             if (user?.uid) {
@@ -51,10 +49,6 @@ function ChatApp() {
                 unsubFromUserConnection && unsubFromUserConnection();
             }
         }, [dispatch, user])
-    */
-    if (!isOnline) {
-        return <LoadingView message="Application has been disconnected from the internet. Please reconnect..." />
-    }
 
     if (isChecking) {
         return <LoadingView />
@@ -70,7 +64,6 @@ function ChatApp() {
                             <Routes>
                                 <Route path="/" element={<WelcomeView/>}/>
                                 <Route path="/home" element={<HomeView/>}/>
-                                <Route path="/chatCreate" element={<HomeView/>}/>
                                 <Route path="/chat/:id" element={<ChatView/>}/>
                                 <Route path="/settings" element={<SettingsView/>}/>
                             </Routes>

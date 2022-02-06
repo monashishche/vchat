@@ -6,7 +6,6 @@ import appReducer from '../reducers/app';
 import settingsReducer from '../reducers/settings';
 
 import appMiddleware from './middlewares/app';
-
 export default function configureStore() {
     const middlewares = [
         thunkMiddleware,
