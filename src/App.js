@@ -48,7 +48,7 @@ function ChatApp() {
             return () => {
                 unsubFromUserConnection && unsubFromUserConnection();
             }
-        }, [dispatch, user])
+        }, [dispatch, user]);
 
     if (isChecking) {
         return <LoadingView />

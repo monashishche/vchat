@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useRef} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {useParams} from 'react-router-dom';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -11,6 +11,7 @@ import {Dropdown, Menu} from 'antd';
 import {DeleteOutlined, HistoryOutlined, LogoutOutlined, ToolTwoTone} from '@ant-design/icons';
 
 import {
+    clearChatMessages, joinChat,
     registerMessageSubscription,
     sendChatMessage,
     subscribeToChat,
@@ -27,6 +28,8 @@ export default function Chat() {
     const messages = useSelector(({chats}) => chats.messages[id])
     const messagesSub = useSelector(({chats}) => chats.messagesSubs[id])
     const joinedUsers = activeChat?.joinedUsers;
+    const user = useSelector(({auth}) => auth.user);
+    const [userChatAdmin, setUserChatAdmin] = useState(false);
 
     useEffect(() => {
         const unsubFromChat = dispatch(subscribeToChat(id));
@@ -40,11 +43,19 @@ export default function Chat() {
             unsubFromChat();
             unsubFromJoinedUsers();
         }
-    }, [])
+    }, []);
 
     useEffect(() => {
         joinedUsers && subscribeToJoinedUsers(joinedUsers);
-    }, [joinedUsers])
+    }, [joinedUsers]);
+
+    const isUserChatAdmin = async () => {
+        const userSnapshot = await activeChat?.admin.get();
+        return userSnapshot?.data();
+    };
+    useEffect(() => {
+        isUserChatAdmin().then(res => setUserChatAdmin(res));
+    }, [activeChat]);
 
     const subscribeToJoinedUsers = useCallback(jUsers => {
         jUsers.forEach(user => {
@@ -52,32 +63,36 @@ export default function Chat() {
                 peopleWatchers.current[user.uid] = dispatch(subscribeToProfile(user.uid, id))
             }
         })
-    }, [dispatch, id])
+    }, [dispatch, id]);
 
     const sendMessage = useCallback(message => {
         dispatch(sendChatMessage(message, id))
             .then(_ => messageList.current.scrollIntoView(false))
-    }, [id])
+    }, [id]);
 
     const unsubFromJoinedUsers = useCallback(() => {
         Object.keys(peopleWatchers.current)
             .forEach(id => peopleWatchers.current[id]())
-    }, [peopleWatchers.current])
+    }, [peopleWatchers.current]);
 
     if (!activeChat?.id) {
         return <LoadingView message="Loading Chat..."/>
     }
 
-    function handleMenuClick(e) {
-        console.log('click', e);
-    }
+    const askForConfirmation = chat => {
+        const isConfirming = window.confirm(`Do you want to clear chat history?`);
+
+        if (isConfirming) {
+            dispatch(clearChatMessages(chat));
+        }
+    };
 
     const menu = (
-        <Menu onClick={handleMenuClick}>
+        <Menu>
             <Menu.Item key="1" icon={<LogoutOutlined/>} disabled>
                 Leave chat
             </Menu.Item>
-            <Menu.Item key="2" icon={<HistoryOutlined/>} disabled>
+            <Menu.Item key="2" icon={<HistoryOutlined/>} onClick={() => askForConfirmation(id)}>
                 Clear messages
             </Menu.Item>
             <Menu.Item key="3" icon={<DeleteOutlined/>} danger disabled>
@@ -93,7 +108,10 @@ export default function Chat() {
             </div>
             <div className="col-9 fh">
                 <ViewTitle title={`${activeChat?.name}`}>
-                    <Dropdown overlay={menu}><ToolTwoTone style={{fontSize: 18, cursor: 'pointer'}} /></Dropdown>
+                    {userChatAdmin && userChatAdmin.uid === user.uid ?
+                        <Dropdown overlay={menu}><ToolTwoTone style={{fontSize: 18, cursor: 'pointer'}}/></Dropdown>
+                        : null
+                    }
                 </ViewTitle>
                 <ChatMessagesList
                     innerRef={messageList}

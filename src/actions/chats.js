@@ -35,37 +35,32 @@ export const createChat = (formData, userId) => async dispatch => {
     await api.joinChat(userId, chatId);
     dispatch({type: 'CHATS_JOIN_SUCCESS', chat: {...newChat, id: chatId}});
     return chatId;
-}
+};
 
 export const subscribeToChat = chatId => dispatch =>
     api
         .subscribeToChat(chatId, async (chat) => {
-
-            const joinedUsers = await Promise.all(chat.joinedUsers.map(async userRef => {
+            chat.joinedUsers = await Promise.all(chat.joinedUsers.map(async userRef => {
                 const userSnapshot = await userRef.get();
                 return userSnapshot.data();
-            }))
-
-            chat.joinedUsers = joinedUsers;
+            }));
             dispatch({type: 'CHATS_SET_ACTIVE_CHAT', chat})
-        })
+        });
 
 export const subscribeToProfile = (uid, chatId) => dispatch =>
     api
         .subscribeToProfile(uid, user => {
             dispatch({type: 'CHATS_UPDATE_USER_STATE', user, chatId})
-        })
+        });
 
 export const sendChatMessage = (message, chatId) => (dispatch, getState) => {
-    const newMessage = {...message};
     const {user} = getState().auth;
-    const userRef = db.doc(`profiles/${user.uid}`);
-    newMessage.author = userRef;
+    const newMessage = {...message, author: db.doc(`profiles/${user.uid}`)};
 
     return api
         .sendChatMessage(newMessage, chatId)
         .then(_ => dispatch({type: 'CHATS_MESSAGE_SENT'}))
-}
+};
 
 export const subscribeToMessages = chatId => dispatch => {
     return api.subscribeToMessages(chatId, async changes => {
@@ -74,31 +69,37 @@ export const subscribeToMessages = chatId => dispatch => {
                 return {id: change.doc.id, ...change.doc.data()}
             }
             return {};
-        })
+        });
 
         const messagesWithAuthor = [];
-        const cache = {}
+        const cache = {};
 
         for await(let message of messages) {
-            if (cache[message.author.id]) {
-                message.author = cache[message.author.id]
-            } else {
-                const userSnapshot = await message.author.get();
-                cache[userSnapshot.id] = userSnapshot.data();
-                message.author = cache[userSnapshot.id]
-            }
+            if(message && message.author) {
+                if (cache[message.author.id]) {
+                    message.author = cache[message.author.id]
+                } else {
+                    const userSnapshot = await message.author.get();
+                    cache[userSnapshot.id] = userSnapshot.data();
+                    message.author = cache[userSnapshot.id]
+                }
 
-            messagesWithAuthor.push(message);
+                messagesWithAuthor.push(message);
+            }
         }
 
         return dispatch({type: 'CHATS_SET_MESSAGES', messages: messagesWithAuthor, chatId})
     })
-}
+};
+
+export const clearChatMessages = chatId => dispatch => {
+    api.clearChatMessages(chatId).then(_ => {
+        dispatch({type: 'CHAT_CLEAR_MESSAGES', chatId})
+    })
+};
 
 export const registerMessageSubscription = (chatId, messageSub) => ({
     type: 'CHATS_REGISTER_MESSAGE_SUB',
     sub: messageSub,
     chatId
-})
-
-// https://banner2.cleanpng.com/20180627/qvc/kisspng-the-legend-of-zelda-majora-s-mask-discord-compute-discord-icon-5b3371b7b55eb4.6840271215300981037429.jpg
+});

@@ -50,4 +50,14 @@ export const subscribeToMessages = (chatId, onSubscribe) =>
         .collection('chats')
         .doc(chatId)
         .collection('messages')
-        .onSnapshot(snapshot => onSubscribe(snapshot.docChanges()))
+        .onSnapshot(snapshot => onSubscribe(snapshot.docChanges()));
+
+export const clearChatMessages = (chatId) =>
+    db
+        .collection('chats')
+        .doc(chatId)
+        .collection('messages').get().then(querySnapshot => {
+        querySnapshot.forEach(message => {
+            message.ref.delete()
+        })
+    });

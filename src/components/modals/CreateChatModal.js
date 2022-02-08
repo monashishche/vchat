@@ -25,6 +25,7 @@ export default function CrateChatModal({visible, setVisibility}) {
             onOk={handleSubmit(onSubmit)}
             onCancel={handleCancel}
             bodyStyle={{padding: 0}}
+            width="420px"
             footer={[
                 <Button key="back" onClick={handleCancel}>
                     Cancel

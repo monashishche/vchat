@@ -10,7 +10,7 @@ export default function Messenger({onSubmit}) {
             sendMessage();
             setValue('');
         }
-    }
+    };
 
     const sendMessage = () => {
         if (value.trim() === '') {
@@ -20,10 +20,10 @@ export default function Messenger({onSubmit}) {
         const message = {
             content: value.trim(),
             timestamp: createTimestamp()
-        }
+        };
 
         onSubmit(message);
-    }
+    };
 
     return (
         <div className="chat-input form-group mt-3 mb-0">
@@ -33,7 +33,7 @@ export default function Messenger({onSubmit}) {
               value={value}
               className="form-control"
               row="3"
-              placeholder="Type your message here..">
+              placeholder="Type your message here...">
           </textarea>
             <button
                 onClick={() => sendMessage()}

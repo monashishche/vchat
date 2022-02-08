@@ -18,6 +18,5 @@ export const onConnectionChanged = onConnection =>
         .database()
         .ref('.info/connected')
         .on('value', snapshot => {
-            const isConnected = snapshot?.val() ? snapshot.val() : false;
-            onConnection(isConnected)
+            onConnection(snapshot?.key === 'connected')
         })

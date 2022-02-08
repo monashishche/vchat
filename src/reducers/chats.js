@@ -14,7 +14,7 @@ function createChatReducer() {
                 return state;
             }
         }
-    }
+    };
 
     const available = (state = [], action) => {
         switch (action.type) {
@@ -28,7 +28,7 @@ function createChatReducer() {
                 return state;
             }
         }
-    }
+    };
 
     const activeChats = createReducer({}, {
         'CHATS_SET_ACTIVE_CHAT': (state, action) => {
@@ -40,23 +40,23 @@ function createChatReducer() {
             const joinedUsers = state[chatId].joinedUsers;
             const index = joinedUsers.findIndex(ju => ju.uid === user.uid);
 
-            if (index < 0) {
-                return state;
-            }
-            if (joinedUsers[index].state === user.state) {
+            if (index < 0 || joinedUsers[index].state === user.state) {
                 return state;
             }
 
             joinedUsers[index].state = user.state;
         }
-    })
+    });
 
     const messages = createReducer({}, {
         'CHATS_SET_MESSAGES': (state, action) => {
             const prevMessages = state[action.chatId] || [];
             state[action.chatId] = [...prevMessages, ...action.messages]
+        },
+        'CHAT_CLEAR_MESSAGES': (state, action) => {
+            state[action.chatId] = []
         }
-    })
+    });
 
     const messagesSubs = (state = {}, action) => {
         switch (action.type) {
@@ -65,7 +65,7 @@ function createChatReducer() {
             default:
                 return state;
         }
-    }
+    };
 
 
     return combineReducers({
