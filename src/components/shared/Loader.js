@@ -1,15 +1,9 @@
 import React from 'react';
 import './Loader.scss';
+import loaderImg from '../../assets/images/react.svg';
 
 export default function Loader() {
     return (
-        <div className="sk-chase">
-            <div className="sk-chase-dot"></div>
-            <div className="sk-chase-dot"></div>
-            <div className="sk-chase-dot"></div>
-            <div className="sk-chase-dot"></div>
-            <div className="sk-chase-dot"></div>
-            <div className="sk-chase-dot"></div>
-        </div>
+        <img src={loaderImg} className="react-logo"/>
     )
 }

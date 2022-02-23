@@ -13,11 +13,11 @@ import {listenToAuthChanges} from './actions/auth';
 import {listenToConnectionChanges} from './actions/app';
 import {HashRouter as Router, Route, Routes} from 'react-router-dom';
 import Navbar from "./components/Navbar";
-import { checkUserConnection } from './actions/connection';
-//import { loadInitialSettings } from './actions/settings';
+import {checkUserConnection} from './actions/connection';
+import {loadInitialSettings} from './actions/settings';
 
 const ContentWrapper = ({children}) => {
-    const isDarkTheme  = useSelector(({settings}) => settings.isDarkTheme);
+    const isDarkTheme = useSelector(({settings}) => settings.isDarkTheme);
     return (
         <div className={`content-wrapper ${isDarkTheme ? 'dark' : 'light'}`}>{children}</div>
     )
@@ -28,54 +28,48 @@ function ChatApp() {
     const isChecking = useSelector(({auth}) => auth.isChecking);
     const user = useSelector(({auth}) => auth.user);
 
-        useEffect(() => {
-           // dispatch(loadInitialSettings());
-            const unsubFromAuth = dispatch(listenToAuthChanges());
-            const unsubFromConnection = dispatch(listenToConnectionChanges());
+    useEffect(() => {
+        dispatch(loadInitialSettings());
+        const unsubFromAuth = dispatch(listenToAuthChanges());
+        const unsubFromConnection = dispatch(listenToConnectionChanges());
 
-            return () => {
-                unsubFromAuth();
-                unsubFromConnection();
-            }
-        }, [dispatch]);
+        return () => {
+            unsubFromAuth();
+            unsubFromConnection();
+        }
+    }, [dispatch]);
 
-        useEffect(() => {
-            let unsubFromUserConnection;
-            if (user?.uid) {
-                unsubFromUserConnection = dispatch(checkUserConnection(user.uid));
-            }
+    useEffect(() => {
+        let unsubFromUserConnection;
+        if (user?.uid) {
+            unsubFromUserConnection = dispatch(checkUserConnection(user.uid));
+        }
 
-            return () => {
-                unsubFromUserConnection && unsubFromUserConnection();
-            }
-        }, [dispatch, user]);
-
-    if (isChecking) {
-        return <LoadingView />
-    }
+        return () => {
+            unsubFromUserConnection && unsubFromUserConnection();
+        }
+    }, [dispatch, user]);
 
     return (
         <Router>
-            {isChecking ? <LoadingView/> :
-                <ContentWrapper>
-                    {user ?
-                        <>
-                            <Navbar/>
-                            <Routes>
-                                <Route path="/" element={<WelcomeView/>}/>
-                                <Route path="/home" element={<HomeView/>}/>
-                                <Route path="/chat/:id" element={<ChatView/>}/>
-                                <Route path="/settings" element={<SettingsView/>}/>
-                            </Routes>
-                        </>
-                        :
-                            <Routes>
-                                <Route path="/*" element={<WelcomeView/>}/>
-                            </Routes>
-                        }
-
-                </ContentWrapper>
-            }
+            {isChecking ? <LoadingView/> : null}
+            <ContentWrapper>
+                {user ?
+                    <>
+                        <Navbar/>
+                        <Routes>
+                            <Route path="/" element={<WelcomeView/>}/>
+                            <Route path="/home" element={<HomeView/>}/>
+                            <Route path="/chat/:id" element={<ChatView/>}/>
+                            <Route path="/settings" element={<SettingsView/>}/>
+                        </Routes>
+                    </>
+                    :
+                    <Routes>
+                        <Route path="/*" element={<WelcomeView/>}/>
+                    </Routes>
+                }
+            </ContentWrapper>
         </Router>
     )
 }
@@ -83,7 +77,7 @@ function ChatApp() {
 export default function App() {
     return (
         <StoreProvider>
-            <ChatApp />
+            <ChatApp/>
         </StoreProvider>
     )
 }

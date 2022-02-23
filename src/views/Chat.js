@@ -11,7 +11,7 @@ import {Dropdown, Menu} from 'antd';
 import {DeleteOutlined, HistoryOutlined, LogoutOutlined, ToolTwoTone} from '@ant-design/icons';
 
 import {
-    clearChatMessages, joinChat,
+    clearChatMessages,
     registerMessageSubscription,
     sendChatMessage,
     subscribeToChat,
@@ -57,6 +57,10 @@ export default function Chat() {
         isUserChatAdmin().then(res => setUserChatAdmin(res));
     }, [activeChat]);
 
+    useEffect(() => {
+        messageList.current?.scrollIntoView({ behavior: 'smooth', block: 'end' })
+    }, [messageList.current]);
+
     const subscribeToJoinedUsers = useCallback(jUsers => {
         jUsers.forEach(user => {
             if (!peopleWatchers.current[user.uid]) {
@@ -67,7 +71,7 @@ export default function Chat() {
 
     const sendMessage = useCallback(message => {
         dispatch(sendChatMessage(message, id))
-            .then(_ => messageList.current.scrollIntoView(false))
+            .then(_ => messageList.current.scrollIntoView({ behavior: 'smooth', block: 'end' }))
     }, [id]);
 
     const unsubFromJoinedUsers = useCallback(() => {

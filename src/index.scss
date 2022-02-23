@@ -294,6 +294,9 @@ nav a {
   flex-direction: row;
   margin-bottom: 40px;
 }
+.chat-container li:last-child {
+  margin-bottom: 0;
+}
 
 .chat-container li img {
   width: 48px;
@@ -522,7 +525,7 @@ ul {
   right: 0;
   bottom: 0;
   left: 0;
-  background-color: $gray-700;
+  background-color: rgba(0, 0, 0, 0.5);
   z-index: 990;
 
   .loading-view {
@@ -533,12 +536,8 @@ ul {
 
     &-container {
       z-index: 9999;
-      background-color: $gray-200;
       padding: 25px;
       font-size: 18px;
-      -webkit-box-shadow: 0 2px 10px 0 rgba(0,0,0,.2);
-      box-shadow: 0 2px 10px 0 rgba(0,0,0,.2);
-      border-radius: 5px;
       -webkit-box-sizing: border-box;
       box-sizing: border-box;
       display: flex;
@@ -587,4 +586,17 @@ ul {
 }
 .create-chat-in-modal {
   box-shadow: none !important;
+}
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.react-logo {
+  animation: App-logo-spin infinite 15s linear;
+  width: 50%;
 }

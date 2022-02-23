@@ -51,7 +51,8 @@ export default function Settings() {
                         </div>
                         <button
                             type="button"
-                            onClick={() => {}}
+                            onClick={() => {
+                            }}
                             className="btn btn-danger">
                             Quit App
                         </button>

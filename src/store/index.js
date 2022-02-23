@@ -6,6 +6,7 @@ import appReducer from '../reducers/app';
 import settingsReducer from '../reducers/settings';
 
 import appMiddleware from './middlewares/app';
+
 export default function configureStore() {
     const middlewares = [
         thunkMiddleware,
@@ -20,7 +21,6 @@ export default function configureStore() {
     })
 
     const rootReducer = (state, action) => {
-
         if (action.type === 'AUTH_LOGOUT_SUCCESS') {
             Object.keys(state).forEach(sk => {
                 if (state[sk].savable) {
